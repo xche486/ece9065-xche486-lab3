@@ -1,0 +1,27 @@
+{
+  "name": "ece9065-xche486-lab3",
+  "version": "1.0.0",
+  "description": "lab3 assignment",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/xche486/ece9065-xche486-lab3.git"
+  },
+  "author": "Amber Chen",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/xche486/ece9065-xche486-lab3/issues"
+  },
+  "homepage": "https://github.com/xche486/ece9065-xche486-lab3#readme",
+  "keywords": [
+    "music",
+    "web",
+    "application"
+  ],
+  "dependencies": {
+    "express": "^4.18.2"
+  }
+}
