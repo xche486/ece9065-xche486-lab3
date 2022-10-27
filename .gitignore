@@ -105,3 +105,6 @@ dist
 
 # Data File
 lab3-data/
+
+# Test File
+app2.js

@@ -1,14 +1,19 @@
-const { Router } = require("express");
+const {Router} = require("express");
 const express = require("express");
+const file = require("fs");
+let csvToJson = require('convert-csv-to-json');
 const app = express();
 const port = 3000;
 const router = express.Router();
 
-const sth = [
-    {track_id:2, album_id:1, album_title:"AWOL - A Way Of Life",	artist_id: "1" , artist_name:"AWsdfsOL"},
-    {track_id:3, album_id:1, album_title:"AWOL - A Way Of Life",	artist_id: "1" , artist_name:"AWssOL"},
-    {track_id:5, album_id:1, album_title:"AWOL - A Way Of Life",	artist_id: "1" , artist_name:"AWwwOL"}
-];
+
+genres= csvToJson.fieldDelimiter(',').getJsonFromCsv("lab3-data/genres.csv"); 
+//https://iuccio.github.io/csvToJson/#generate-array-of-object-in-json-format
+raw_albums= csvToJson.fieldDelimiter(',').getJsonFromCsv("lab3-data/raw_albums.csv"); 
+raw_tracks= csvToJson.fieldDelimiter(',').getJsonFromCsv("lab3-data/raw_tracks.csv"); 
+raw_artists= csvToJson.fieldDelimiter(',').getJsonFromCsv("lab3-data/raw_artists.csv"); 
+
+
 
 //static front end
 app.use('/', express.static('static'))
@@ -20,19 +25,27 @@ app.use((req,res,next)=>{ // for all routes
 });
 
 //router 
-app.use('/api/raw_track', router);//install router at this location
+app.use('/api/', router);//install router at this location
 
 
 //normal get
 router.get('/', (req,res) =>{
-    res.send(sth);
+    res.send(genres);
 });
 
-//get specific part
-router.get('/:track_id',(req, res)=> {
-    const id =req.params.track_id;
+//get all available genre names, IDs and parent IDs
+router.get('/:item1',(req, res)=> {
+    for (item in genres){
+        delete myObj.genres.[""];
+        delete myObj.genres.#tracks;
+
+    res.send();
+});
+
+router.get('/:item1',(req, res)=> {
+    const id =req.params.item1;
     //validate
-    const track = sth.find( p => p.track_id === parseInt(id));
+    const track = genres.find( genre => genre.track_id === parseInt(id));
     if (track){
         res.send(track);
     }
@@ -40,6 +53,19 @@ router.get('/:track_id',(req, res)=> {
         res.status(404).send(`GET requests for ${id} cannot be found`)
     }
 })
+
+//get specific part
+/* router.get('/:track_id',(req, res)=> {
+     const id =req.params.track_id;
+     //validate
+     const track = genres.find( p => p.track_id === parseInt(id));
+     if (track){
+         res.send(track);
+     }
+     else {
+         res.status(404).send(`GET requests for ${id} cannot be found`)
+     }
+}) */
 
 
 app.listen(port, () => {
