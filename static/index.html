@@ -13,6 +13,81 @@
 
 <h1>We have your parts</h1>
 <p>ALOHA</p>
+<h1>first one</h1>
+<p id ="1"></p>
+<p id ="2"></p>
+<p id ="3"></p>
+<h2>second</h2>
+<p id ="4"></p>
+
+<script>
+/* async function getUser() {
+  try {
+    const response = await fetch("localhost:3000/api/:item1", {
+      method: 'GET',
+      headers: {
+        accept: 'application/json',
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error(`Error! status: ${response.status}`);
+    }
+
+    const result = await response.json();
+    return result;
+  } catch (err) {
+    console.log(err);
+  }
+}
+getUser()
+ */
+
+ fetch('http://localhost:3000/api/item1')
+.then(res => res.json())
+.then(data => {
+    console.log(data)
+    data2=data;
+    document.getElementById("1").innerHTML = data2[0].names;
+    document.getElementById("2").innerHTML = data2[0].ID;
+    document.getElementById("3").innerHTML = data2[0].parent;
+    document.getElementById("4").innerHTML = data2[1].names;
+  // do something with data
+})
+.catch(rejected => {
+    console.log(rejected);
+});
+
+/* getUser();
+  try {
+    const response = await fetch('localhost:3000/api/item1', {
+      method: 'GET',
+      headers: {
+        accept: 'application/json',
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error(`Error! status: ${response.status}`);
+      alert("not ok");
+    }
+
+    const result = await response.json();
+    console.log(result);
+    alert("something");
+  } catch (err) {
+    alert("error");
+    console.log(err);
+  }
+ */
+
+//   .then(response => response.json())
+//   .then(y => {
+//     document.getElementById("3").innerHTML = y;
+//   });
+  
+</script>
+
 
 <!-- Embedded JavaScript go here -->
 </body>

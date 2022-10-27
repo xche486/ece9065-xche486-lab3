@@ -1,10 +1,16 @@
 const {Router} = require("express");
 const express = require("express");
-const file = require("fs");
+//cannot fetch, err failed
+
+var cors = require('cors')
+
 let csvToJson = require('convert-csv-to-json');
 const app = express();
 const port = 3000;
 const router = express.Router();
+
+//use cors
+app.use(cors())
 
 
 genres= csvToJson.fieldDelimiter(',').getJsonFromCsv("lab3-data/genres.csv"); 
@@ -34,15 +40,21 @@ router.get('/', (req,res) =>{
 });
 
 //get all available genre names, IDs and parent IDs
+var limited_genres =[];
 router.get('/:item1',(req, res)=> {
-    for (item in genres){
-        delete myObj.genres.[""];
-        delete myObj.genres.#tracks;
-
-    res.send();
+//    item = genres[0];
+//    console.log(item);
+//    console.log(genres.length);
+    var index = 0;
+     while ( index < genres.length) {
+        //console.log({'names' : genres[index].title, 'ID' : genres[index].genre_id, 'Parent ID': genres[index].parent})
+        limited_genres.push({'names' : genres[index].title, 'ID' : genres[index].genre_id, 'Parent ID': genres[index].parent});
+        index += 1 ;
+    }
+     res.send(limited_genres);
 });
 
-router.get('/:item1',(req, res)=> {
+router.get('/:item2',(req, res)=> {
     const id =req.params.item1;
     //validate
     const track = genres.find( genre => genre.track_id === parseInt(id));
