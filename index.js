@@ -1,24 +1,17 @@
 const {Router} = require("express");
 const express = require("express");
+const mysql = require('mysql');
 //cannot fetch, err failed
 
-var cors = require('cors')
+const cors = require('cors')
 
+//use convert csv to json from 
+//iuccio.github.io/csvToJson/
 let csvToJson = require('convert-csv-to-json');
 const app = express();
 const port = 3000;
 const router = express.Router();
-
-//use cors
 app.use(cors())
-
-
-genres= csvToJson.fieldDelimiter(',').getJsonFromCsv("lab3-data/genres.csv"); 
-//https://iuccio.github.io/csvToJson/#generate-array-of-object-in-json-format
-raw_albums= csvToJson.fieldDelimiter(',').getJsonFromCsv("lab3-data/raw_albums.csv"); 
-raw_tracks= csvToJson.fieldDelimiter(',').getJsonFromCsv("lab3-data/raw_tracks.csv"); 
-raw_artists= csvToJson.fieldDelimiter(',').getJsonFromCsv("lab3-data/raw_artists.csv"); 
-
 
 
 //static front end
@@ -32,6 +25,7 @@ app.use((req,res,next)=>{ // for all routes
 
 //router 
 app.use('/api/', router);//install router at this location
+
 
 
 //normal get
