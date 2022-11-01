@@ -14,43 +14,38 @@
 <h1>We have your parts</h1>
 <p>ALOHA</p>
 <h1>first one</h1>
-<p id ="1"></p>
+
+<div class="all_genres" >
+  <button class ="search_button" onclick="allgenres()" type ="submit"> Get all available genres </button>
+</div>
+
+<form method="POST" action="http://localhost:3000/api/give_artist_id">
+  <input id ="given_artist_id" type ="text" placeholder="give an artist ID">
+  <button class ="search_button" onclick="artistIDfind()" type ="submit"> Search </button> 
+</form>
+
+<div class="artist_find">
+  
+</div>
+
+
+<p id ="1">here</p>
 <p id ="2"></p>
 <p id ="3"></p>
 <h2>second</h2>
 <p id ="4"></p>
 
 <script>
-/* async function getUser() {
-  try {
-    const response = await fetch("localhost:3000/api/:item1", {
-      method: 'GET',
-      headers: {
-        accept: 'application/json',
-      },
-    });
 
-    if (!response.ok) {
-      throw new Error(`Error! status: ${response.status}`);
-    }
 
-    const result = await response.json();
-    return result;
-  } catch (err) {
-    console.log(err);
-  }
-}
-getUser()
- */
-
- fetch('http://localhost:3000/api/item1')
+ fetch('http://localhost:3000/api/genres')
 .then(res => res.json())
 .then(data => {
     console.log(data)
     data2=data;
     document.getElementById("1").innerHTML = data2[0].names;
-    document.getElementById("2").innerHTML = data2[0].ID;
-    document.getElementById("3").innerHTML = data2[0].parent;
+    document.getElementById("2").innerHTML = data2[0].IDs;
+    document.getElementById("3").innerHTML = data2[0].parents;
     document.getElementById("4").innerHTML = data2[1].names;
   // do something with data
 })
