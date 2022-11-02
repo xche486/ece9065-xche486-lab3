@@ -15,19 +15,31 @@
 <p>ALOHA</p>
 <h1>first one</h1>
 
-<div class="all_genres" >
+<div class = "search" id="all_genres" >
   <button class ="search_button" onclick="allgenres()" type ="submit"> Get all available genres </button>
 </div>
 
-<form method="POST" action="http://localhost:3000/api/give_artist_id">
+<div class = "search" id="find_artist" >
   <input id ="given_artist_id" type ="text" placeholder="give an artist ID">
   <button class ="search_button" onclick="artistIDfind()" type ="submit"> Search </button> 
-</form>
-
-<div class="artist_find">
-  
 </div>
 
+<div class = "search" id="find_track" >
+  <input id ="given_track_id" type ="text" placeholder="give an track ID">
+  <button class ="search_button" onclick="trackIDfind()" type ="submit"> Search </button> 
+</div>
+
+<div class = "search" id="track_pattern" >
+  <input id ="given_track_pattern" type ="text" placeholder="give an track pattern">
+  <input id ="given_track_pattern" type ="text" placeholder="give an track pattern">
+  <input id ="given_track_pattern" type ="text" placeholder="give an track pattern">
+  <button class ="search_button" onclick="trackPatternfind()" type ="submit"> Search </button> 
+</div>
+  
+<div class = "search" id="artist_pattern" >
+  <input id ="given_artist_pattern" type ="text" placeholder="give an artist pattern">
+  <button class ="search_button" onclick="artistPatternfind()" type ="submit"> Search </button> 
+</div>
 
 <p id ="1">here</p>
 <p id ="2"></p>
@@ -35,10 +47,13 @@
 <h2>second</h2>
 <p id ="4"></p>
 
+<script src="front.js"></script>
+
 <script>
 
 
- fetch('http://localhost:3000/api/genres')
+/*  这个能run的
+fetch('http://localhost:3000/api/genres')
 .then(res => res.json())
 .then(data => {
     console.log(data)
@@ -52,6 +67,7 @@
 .catch(rejected => {
     console.log(rejected);
 });
+ */
 
 /* getUser();
   try {
