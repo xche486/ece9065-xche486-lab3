@@ -50,6 +50,7 @@ router.get('/genres',(req, res)=> {
 
 //get specific artist information 
 app.post('/api/artists',(req, res)=> {
+    console.log(req.body);
     const id = req.body.ID;
     condition ="SELECT artist_id, artist_comments, artist_favorites, artist_handle, artist_name,artist_url, tags FROM raw_artists WHERE artist_id = '"+ id + "' " ;
     con.query(condition , function (err , artists, fields) {
@@ -58,7 +59,8 @@ app.post('/api/artists',(req, res)=> {
             res.send(artists.rows);
         }
         else {
-            res.status(404).send(`GET requests for ${id} cannot be found`)
+            const badrequest = {"error": "bad request, there is no such list!"};
+            res.send(badrequest);
         }; 
     });
 });
@@ -74,7 +76,8 @@ app.post('/tracks',(req, res)=> {
             res.send(track.rows);
         }
         else {
-            res.status(404).send(`GET requests for ${id} cannot be found`)
+            const badrequest = {"error": "bad request, there is no such list!"};
+            res.send(badrequest);
         };
     }); 
 });
@@ -82,6 +85,7 @@ app.post('/tracks',(req, res)=> {
 
 //get track id based on pattern with album and track title
 app.post('/tracks_pattern',(req, res)=> {
+    console.log(req.body);
     const title = req.body.title; 
     const pattern = "%"+ title + "%";
     const n = req.body.n; 
@@ -93,16 +97,18 @@ app.post('/tracks_pattern',(req, res)=> {
             res.send(tracks.rows);
         }
         else {
-            res.status(404).send(`GET requests for ${id} cannot be found`)
+            const badrequest = {"error": "bad request, there is no such list!"};
+            res.send(badrequest);
         };
     });
 });
 
-//get artist ids based on pattern with name 
+//5.get artist ids based on pattern with name 
 app.post('/artist_pattern',(req, res)=> {
+        console.log(req.body);
         const name = req.body.pattern;
         const pattern = "%"+name+"%";
-        condition ="SELECT artist_id, artist_name FROM raw_artists WHERE artist_name LIKE '"+ pattern + "' ";
+        condition ="SELECT artist_id, artist_name FROM raw_artists WHERE artist_name iLIKE '"+ pattern + "' ";
         con.query(condition , function (err , artists, fields) {
         if (err) throw err;
          if (artists.rows){
@@ -114,6 +120,209 @@ app.post('/artist_pattern',(req, res)=> {
       });
 });
 
+//6. create list name or error  
+app.post('/newlist',(req, res)=> {
+    const name = req.body.name;
+    const tracks = req.body.tracks;
+    condition ="SELECT * FROM lists WHERE name = '"+ name + "' ";
+    con.query(condition , function (err , lists, fields) {
+    if (err) throw err;
+    if (lists.rows.length > 0){
+        const badrequest = {"error": "bad request, You cannot use this name, occupied"};
+        res.send(badrequest);
+    }
+    else {
+        condition = "INSERT INTO lists VALUES ('"+ name +"','"+ tracks+ "') "
+        console.log(condition);
+        con.query(condition , function (err , lists, fields) {
+            if (err) throw err;
+            else {
+                const success = {"success": "You have a new list now"};
+                res.send(success);
+            }
+        });
+        return;
+    }
+  });
+});
+
+//7. save list name or update
+app.post('/updatelist',(req, res)=> {
+    const name = req.body.name;
+    const tracks = req.body.tracks;
+    condition ="SELECT * FROM lists WHERE name = '"+ name + "' ";
+    console.log(condition);
+    con.query(condition, function (err, lists, fields) {
+    if (err) throw err;
+    if (lists.rows.length == 0){
+        const badrequest = {"error": "bad request, there is no such list!"};
+        res.send(badrequest);
+    }
+    else {
+        condition = "UPDATE lists SET tracks = '" + tracks +"' WHERE name = '"+ name + "' "; 
+        con.query(condition , function (err , lists, fields) {
+            if (err) throw err;
+            else {
+                const success = {"success": "You have updated the list "};
+                res.send(success);
+            }
+        });
+    };
+  });
+});
+
+//8. get a list of tracks based on schedules
+app.post('/schedule',(req, res)=> {
+    const name = req.body.name;
+    condition ="SELECT tracks FROM lists WHERE name = '"+ name + "' ";
+    con.query(condition, function (err, lists, fields) {
+    if (err) throw err;
+    if (lists.rows.length == 0){
+        const badrequest = {"error": "bad request, there is no such list!"};
+        res.send(badrequest);
+    }
+    else {
+        res.send(lists.rows[0]);
+        }
+  });
+});
+
+//9. delete a list of tracks based on schedules
+app.post('/deletelist',(req, res)=> {
+    const name = req.body.name;
+    condition ="SELECT tracks FROM lists WHERE name = '"+ name + "' ";
+    con.query(condition, function (err, lists, fields) {
+    if (err) throw err;
+    if (lists.rows.length == 0){
+        const badrequest = {"error": "bad request, there is no such list!"};
+        res.send(badrequest);
+    }
+    else {
+        condition = "DELETE FROM lists WHERE name = '"+ name + "' "; 
+        con.query(condition , function (err , lists, fields) {
+            if (err) throw err;
+            else {
+                const success = {"success": "You have deleted the list "};
+                res.send(success);
+            }
+        });
+    }
+  });
+});
+
+//10. get a list of list of tracks, num of tracks, total durations.
+app.get('/lists',(req, res)=> {
+    condition ="SELECT * FROM lists";
+    con.query(condition, function (err, lists, fields) {
+        if (err) throw err;
+        lists = lists.rows;
+        console.log(lists);
+
+        if (lists.length == 0){
+            const badrequest = {"error": "bad request, there is no list!"};
+            res.send(badrequest);
+        }
+        else {
+            var index = 0;
+            let returns=[];
+            while ( index < lists.length) {
+                list = lists[index];
+                var duration =  totaltime(list.tracks);
+                var len = list.tracks.length;
+                console.log("return is :", list.name,len);
+                index+=1;
+                returns.push([list.name,len,duration]);
+            }
+        }
+    });
+    res.send(returns);
+});
+
+async function totaltime(tracks){
+    var totalmin = 0 ;
+    var totalsec = 0;
+    for (const track of tracks){
+        console.log("this track is:", track);
+        condition ="SELECT track_duration FROM raw_tracks WHERE track_id = '" + track + "'";
+        con.query(condition, function (err, track_duration, fields) {
+        if (err) throw err;
+        else{
+            timetext = track_duration.rows[0].track_duration;
+            console.log("this track is:", timetext);
+            minu = parseInt(timetext.split(":")[0]);
+            sec = parseInt(timetext.split(":")[1]);
+            console.log("time is :", minu,sec);
+            totalmin += minu;
+            totalsec += sec;
+            console.log("total is :", totalmin, totalsec);
+        }
+        })
+    }
+    duration = totalmin *60 + totalsec;
+    console.log("total is :", duration);
+    return duration.toString();
+}
+
+
+//front 01 
+app.post('/searchmusic',(req, res)=> {
+    const name = req.body.name;
+    const option = req.body.option;
+    let condition;
+    if (option == "0"){
+        //trackname
+        condition ="SELECT * FROM raw_tracks WHERE track_title = '"+ name + "' ";
+    }
+    if (option == "1"){
+        //artist name 
+        condition ="SELECT * FROM raw_tracks WHERE artist_name = '"+ name + "' ";
+    }
+    if (option == "2"){
+        //album name 
+        condition ="SELECT * FROM raw_tracks WHERE album_title = '"+ name + "' ";
+    }
+    con.query(condition, function (err, musics, fields) {
+    if (err) throw err;
+    if (musics.rows.length == 0){
+        const badrequest = {"error": "there is no music with this name exist"};
+        res.send(badrequest);   
+    }
+    else {
+        res.send(musics.rows);
+    }
+  });
+});
+
+
+//frontend 2. create any number of fav list
+app.post('/favlist',(req, res)=> {
+    const name = req.body.name;
+    condition ="SELECT tracks FROM lists WHERE name = '"+ name + "' ";
+    con.query(condition, function (err, tracks, fields) {
+    if (err) throw err;
+    if (tracks.rows.length == 0){
+        const badrequest = {"error": "bad request, there is no such list!"};
+        res.send(badrequest);
+    }
+    else {
+        tracks=tracks.rows[0].tracks;
+        let result= [];
+        for (const index in tracks){
+            condition2 ="SELECT artist_name, track_title, album_title, track_duration FROM raw_tracks WHERE track_id = '"+ tracks[index] + "' ";
+            con.query(condition2, function (err, music, fields) {
+                if (err) throw err;
+                //console.log(music.rows);
+                if (music.rows.length > 0){
+                    result.push(music.rows)
+                    console.log("updated result is ", result);
+                }
+            });
+        }
+        console.log(result);
+        res.send(result);
+        }
+  });
+});
 
   /* //normal get
 router.get('/', (req,res) =>{
