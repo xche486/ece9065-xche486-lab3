@@ -1,40 +1,13 @@
+
 //1
 function allgenres(){
     fetch('http://localhost:3000/api/genres')
     .then(res => res.json())
     .then(data => {
-        console.log(data)
-        /*
-        let i = 0;
-        result = document.getElementById("all_genres")
-        while (i < data.length){
-          genre = document.createElement('div');
-          genre.setAttribute("class", "genre");
-          genre
+      console.log(data)
+      update_table(data);
+//没写完的
 
-          genrename = document.createElement('p');
-          gname=document.createTextNode(data2[i].names);
-          genrename.appendChild(gname);
-          genre.appendChild(genrename);
-
-
-          genreid = document.createElement('p');
-          gid=document.createTextNode(data2[i].IDs)
-          genreid.appendChild(gid);
-          genre.appendChild(genreid);
-
-          genreparent = document.createElement('p');
-          gparent=document.createTextNode(data2[i].parents)
-          genreparent.appendChild(gparent);
-          genre.appendChild(genreparent);
-        }
-        document.getElementById("1").innerHTML = data2[0].names;
-        document.getElementById("2").innerHTML = data2[0].IDs;
-        document.getElementById("3").innerHTML = data2[0].parents;
-        document.getElementById("4").innerHTML = data2[1].names;
-
-      // do something with data
-      */
      
     })
     .catch(rejected => {
@@ -66,6 +39,40 @@ async function postData(method = '', url = '', data) {
   return response.json(); // parses JSON response into native JavaScript objects
 }
 
+
+
+//要检查这个在error的时候不会被运行！！！！！！！！！！！！！！！！！！！！！！
+function update_table(ls){
+  let tbo=document.getElementById("results").children[0];
+  let header=document.getElementById("results").children[0].children[0];
+  header.parentNode.removeChild(header);
+  header = document.createElement("tr");
+  tbo.appendChild(header);
+
+  //for headers
+  let lskeys=Object.keys(ls[0]);
+  for (const i in lskeys){
+    let key= document.createElement("th");
+    let key_text = document.createTextNode(lskeys[i]);
+    key.appendChild(key_text);
+    header.appendChild(key);
+  }
+
+  //for contents
+  for (j in ls){
+    let row = document.createElement("tr");
+    let lsvalues=Object.values(ls[j]);
+    for (const i in lsvalues){
+      let value= document.createElement("td");
+      let content=document.createTextNode(lsvalues[i]);
+      value.appendChild(content);      
+      row.appendChild(value);
+    }
+    tbo.appendChild(row);
+  }
+
+}
+
 //2
 function artistIDfind(){
   const id =document.getElementById("given_artist_id").value;
@@ -77,6 +84,7 @@ function artistIDfind(){
     let receive = postData('POST', 'http://localhost:3000/api/artists', item);
     receive.then(res =>{
       console.log(res);
+      update_table(res);
     })
   }
 }
@@ -91,7 +99,7 @@ function trackIDfind(){
     let item = {"ID": id };
     let receive = postData('POST', 'http://localhost:3000/tracks', item);
     receive.then(res =>{
-      console.log(res);
+      update_table(data);
     })
   }
 }
@@ -107,7 +115,7 @@ function trackPatternfind(){
     let item = {"title": title,"n":n };
     let receive = postData('POST', 'http://localhost:3000/tracks_pattern/', item);
     receive.then(res =>{
-      console.log(res);
+      update_table(data);
     })
   }
 }
@@ -122,7 +130,7 @@ function artistPatternfind(){
     let item = {"pattern": pattern};
     let receive = postData('POST', 'http://localhost:3000/artist_pattern/', item);
     receive.then(res =>{
-      console.log(res);
+      update_table(data);
     })
   }
 }
@@ -139,7 +147,7 @@ function newlist(){
     let item = {"name": name,"tracks": trackls};
     let receive = postData('POST', 'http://localhost:3000/newlist', item);
     receive.then(res =>{
-      console.log(res);
+      update_table(data);
     })
   }
 }
@@ -158,6 +166,7 @@ function savetrackls(){
     let receive = postData('POST', 'http://localhost:3000/updatelist', item);
     receive.then(res =>{
       console.log(res);
+      update_table(data);
     })
   }
 }
@@ -173,6 +182,7 @@ function gettrackls(){
     let receive = postData('POST', 'http://localhost:3000/schedule', item);
     receive.then(res =>{
       console.log(res);
+      update_table(data);
     })
   }
 }
@@ -188,6 +198,7 @@ function deltrackls(){
     let receive = postData('POST', 'http://localhost:3000/deletelist', item);
     receive.then(res =>{
       console.log(res);
+      update_table(data);
     })
   }
 }
@@ -197,6 +208,7 @@ function lists(){
     let receive = postData('GET', 'http://localhost:3000/deletelist', item);
     receive.then(res =>{
       console.log(res);
+      update_table(data);
     })
 }
 
@@ -212,6 +224,7 @@ function track_search(){
     let receive = postData('POST', 'http://localhost:3000/searchmusic', item);
     receive.then(res =>{
       console.log(res);
+      update_table(data);
     })
   }
 }
@@ -228,10 +241,12 @@ function newlist_name(){
     let receive = postData('POST', 'http://localhost:3000/newlist', item);
     receive.then(res =>{
       console.log(res);
+      update_table(data);
     })
   }
 }
 
+//frontend 2.2
 function getfavlst(){
   const name =document.getElementById("given_lsname_fav").value;
   if (name =="" ){
@@ -242,6 +257,8 @@ function getfavlst(){
     let receive = postData('POST', 'http://localhost:3000/favlist', item);
     receive.then(res =>{
       console.log(res);
+      update_table(data);
     })
   }
 }
+

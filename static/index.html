@@ -11,10 +11,6 @@
 <body>
 <!-- Place your content here -->
 
-<h1>We have your parts</h1>
-<p>ALOHA</p>
-<h1>first one</h1>
-
 <h1>Backend #1</h1>
 <div class = "search" id="all_genres" >
   <button class ="search_button" onclick="allgenres()" type ="submit"> Get all available genres </button>
@@ -100,58 +96,16 @@
   <button class ="search_button" onclick="getfavlst()" type ="submit"> Search </button> 
 </div>
 
+<h1>results</h1>
+<table id="results">
+  <tr id ="header">
+  
+  </tr>
+</table>
+
 
 <script src="front.js"></script>
 
-<script>
-
-
-/*  这个能run的
-fetch('http://localhost:3000/api/genres')
-.then(res => res.json())
-.then(data => {
-    console.log(data)
-    data2=data;
-    document.getElementById("1").innerHTML = data2[0].names;
-    document.getElementById("2").innerHTML = data2[0].IDs;
-    document.getElementById("3").innerHTML = data2[0].parents;
-    document.getElementById("4").innerHTML = data2[1].names;
-  // do something with data
-})
-.catch(rejected => {
-    console.log(rejected);
-});
- */
-
-/* getUser();
-  try {
-    const response = await fetch('localhost:3000/api/item1', {
-      method: 'GET',
-      headers: {
-        accept: 'application/json',
-      },
-    });
-
-    if (!response.ok) {
-      throw new Error(`Error! status: ${response.status}`);
-      alert("not ok");
-    }
-
-    const result = await response.json();
-    console.log(result);
-    alert("something");
-  } catch (err) {
-    alert("error");
-    console.log(err);
-  }
- */
-
-//   .then(response => response.json())
-//   .then(y => {
-//     document.getElementById("3").innerHTML = y;
-//   });
-  
-</script>
 
 
 <!-- Embedded JavaScript go here -->

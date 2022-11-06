@@ -211,12 +211,12 @@ app.post('/deletelist',(req, res)=> {
 });
 
 //10. get a list of list of tracks, num of tracks, total durations.
-app.get('/lists',(req, res)=> {
+app.get('/lists', async(req, res)=> {
     condition ="SELECT * FROM lists";
     con.query(condition, function (err, lists, fields) {
         if (err) throw err;
         lists = lists.rows;
-        console.log(lists);
+        console.log("list is ", lists);
 
         if (lists.length == 0){
             const badrequest = {"error": "bad request, there is no list!"};
@@ -227,15 +227,17 @@ app.get('/lists',(req, res)=> {
             let returns=[];
             while ( index < lists.length) {
                 list = lists[index];
-                var duration =  totaltime(list.tracks);
+                var duration = setTimeout(function() {totaltime(list.tracks)}, 2000);
+                //var duration = totaltime(list.tracks);
                 var len = list.tracks.length;
                 console.log("return is :", list.name,len);
                 index+=1;
                 returns.push([list.name,len,duration]);
             }
+            res.send(returns);
         }
     });
-    res.send(returns);
+
 });
 
 async function totaltime(tracks){
@@ -294,8 +296,8 @@ app.post('/searchmusic',(req, res)=> {
 });
 
 
-//frontend 2. create any number of fav list
-app.post('/favlist',(req, res)=> {
+//frontend 2. create any number of fav list一样的问题，send比received早
+app.post('/favlist', async(req, res)=> {
     const name = req.body.name;
     condition ="SELECT tracks FROM lists WHERE name = '"+ name + "' ";
     con.query(condition, function (err, tracks, fields) {
@@ -323,53 +325,6 @@ app.post('/favlist',(req, res)=> {
         }
   });
 });
-
-  /* //normal get
-router.get('/', (req,res) =>{
-    res.send(genres);
-});
- */
-/* //get all available genre names, IDs and parent IDs
-var limited_genres =[];
-router.get('/:item1',(req, res)=> {
-//    item = genres[0];
-//    console.log(item);
-//    console.log(genres.length);
-    var index = 0;
-     while ( index < genres.length) {
-        //console.log({'names' : genres[index].title, 'ID' : genres[index].genre_id, 'Parent ID': genres[index].parent})
-        limited_genres.push({'names' : genres[index].title, 'ID' : genres[index].genre_id, 'Parent ID': genres[index].parent});
-        index += 1 ;
-    }
-     res.send(limited_genres);
-});
- */
-
-/* router.get('/:item2',(req, res)=> {
-    const id =req.params.item1;
-    //validate
-    const track = genres.find( genre => genre.track_id === parseInt(id));
-    if (track){
-        res.send(track);
-    }
-    else {
-        res.status(404).send(`GET requests for ${id} cannot be found`)
-    }
-})
- */
-//get specific part
-/* router.get('/:track_id',(req, res)=> {
-     const id =req.params.track_id;
-     //validate
-     const track = genres.find( p => p.track_id === parseInt(id));
-     if (track){
-         res.send(track);
-     }
-     else {
-         res.status(404).send(`GET requests for ${id} cannot be found`)
-     }
-}) */
-
 
 app.listen(port, () => {
     console.log(`listening to port ${port}`)
