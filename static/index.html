@@ -11,75 +11,96 @@
 <body>
 <!-- Place your content here -->
 
-<h1>Backend #1</h1>
+
+<h2>Backend #1</h2>
+<p>1.	Get all available genre names, IDs and parent IDs.</p>
+<p> </p>
 <div class = "search" id="all_genres" >
   <button class ="search_button" onclick="allgenres()" type ="submit"> Get all available genres </button>
 </div>
 
 
-<h1>Backend #2</h1>
+<h2>Backend #2</h2>
+<p>2.	Get the artist details given an artist ID. </p>
 <div class = "search" id="find_artist" >
   <input id ="given_artist_id" type ="text" placeholder="give an artist ID">
   <button class ="search_button" onclick="artistIDfind()" type ="submit"> Search </button> 
 </div>
 
 
-<h1>Backend #3</h1>
+<h2>Backend #3</h2>
+<p>3.	Get the following details for a given track ID: </p>
+<p>album_id, album_title, artist_id, artist_name, tags, track_date_created, track_date_recorded, track_duration, track_genres, track_number, track_title </p>
 <div class = "search" id="find_track" >
   <input id ="given_track_id" type ="text" placeholder="give an track ID">
   <button class ="search_button" onclick="trackIDfind()" type ="submit"> Search </button> 
 </div>
 
 
-<h1>Backend #4</h1>
+<h2>Backend #4</h2>
+<p>4.	Get the first n number of matching track IDs for a given search pattern matching the track title or album. If the number of matches is less than n, then return all matches. </p>
 <div class = "search" id="track_pattern" >
   <input id ="given_track_pattern" type ="text" placeholder="give an track pattern">
-  <input id ="given_value_n" type ="text" placeholder="give an track pattern">
+  <input id ="given_value_n" type ="text" placeholder="give a value for n">
   <button class ="search_button" onclick="trackPatternfind()" type ="submit"> Search </button> 
 </div>
   
 
-<h1>Backend #5</h1>
+<h2>Backend #5</h2>
+<p>5.	Get all the matching artist IDs for a given search pattern matching the artist's name.</p>
 <div class = "search" id="artist_pattern" >
   <input id ="given_artist_pattern" type ="text" placeholder="give an artist pattern">
   <button class ="search_button" onclick="artistPatternfind()" type ="submit"> Search </button> 
 </div>
 
-<h1>Backend #6</h1>
+<h2>Backend #6</h2>
+<p>6.	Create a new list to save a list of tracks with a given list name. Return an error if name exists.</p>
 <div class = "search" id="newlist" >
   <input id ="given_lsname_new" type ="text" placeholder="give a new list name ">
   <input id ="given_ls_track_new" type ="text" placeholder="give track ID seperate by ',' ">
   <button class ="search_button" onclick="newlist()" type ="submit"> Search </button> 
 </div>
 
-<h1>Backend #7</h1>
+<h2>Backend #7</h2>
+<p>7.	Save a list of track IDs to a given list name. Return an error if the list name does not exist. Replace existing track IDs with new values if the list exists. </p>
 <div class = "search" id="updatelist" >
   <input id ="given_lsname_update" type ="text" placeholder="give a name of list">
   <input id ="given_ls_track" type ="text" placeholder="give track ID seperate by ','">
   <button class ="search_button" onclick="savetrackls()" type ="submit"> Search </button> 
 </div>
 
-<h1>Backend #8</h1>
+<h2>Backend #8</h2>
+<p>8.	Get the list of track IDs for a given schedule</p>
 <div class = "search" id="schedule" >
   <input id ="given_lsname_get" type ="text" placeholder="give a name of list">
   <button class ="search_button" onclick="gettrackls()" type ="submit"> Search </button> 
 </div>
 
-<h1>Backend #9</h1>
+<h2>Backend #9</h2>
+<p>9.	Delete a list of tracks with a given name. Return an error if the given list doesn’t exist</p>
 <div class = "search" id="deletelist" >
   <input id ="given_lsname_del" type ="text" placeholder="give a name of list">
   <button class ="search_button" onclick="deltrackls()" type ="submit"> Search </button> 
 </div>
 
-<h1>Backend #10</h1>
+<h2>Backend #10</h2>
+<p>10.	Get a list of list names, number of tracks that are saved in each list and the total play time of each list.</p>
 <div class = "search" id="crosslists" >
   <button class ="search_button" onclick="lists()" type ="submit"> Duration Check </button> 
 </div>
 
-<h1>Frontend #2</h1>
-<div class = "search" id="searchmusic" >
+<h1>results</h1>
+<table id="results">
+  <tr id ="header">
+  </tr>
+</table>
 
-  <label for="name">Choose a type of name to search for:</label>
+
+<h2>Frontend #2</h2>
+<p>2.	Ability to search the music data by track name, artist name or album name and display results. </p>
+<div class = "search" id="searchmusic" >
+  <p>Choose a type of name to search for:</p>
+  <label for="name"></label>
   <input id ="given_music_name" type ="text" placeholder="give a name">
   <select id="name">
     <option value="track_name">Track name</option>
@@ -89,17 +110,17 @@
   <button class ="search_button" onclick="track_search()" type ="submit">  Search  Music </button> 
 </div>
 
-<h1>Frontend #3</h1>
+<h2>Frontend #3</h2>
+<p>3.	Ability to create any number of favourite lists, retrieve them and display artist, title, album and play time for each track in the list. </p>
 <div class = "search" id="favlist" >
   <input id ="given_lsname_fav" type ="text" placeholder="give a name of list">
   <button class ="search_button" onclick="newlist_name()" type ="submit"> Create </button> 
   <button class ="search_button" onclick="getfavlst()" type ="submit"> Search </button> 
 </div>
 
-<h1>results</h1>
-<table id="results">
-  <tr id ="header">
-  
+<h1>Front-End Results Table</h1>
+<table id="front_table">
+  <tr id ="front_header">
   </tr>
 </table>
 

@@ -38,17 +38,18 @@ con.connect(function(err) {
 });
 
 
-//get all available genre names, IDs and parent IDs
+//1.get all available genre names, IDs and parent IDs
 router.get('/genres',(req, res)=> {
     condition ="SELECT title as names, genre_id as IDs, parent as Parent_IDs FROM genres" 
     con.query(condition , function (err , genres, fields) {
       if (err) throw err;
       res.send(genres.rows);
+      console.log()
   }); 
 });
 
 
-//get specific artist information 
+//2.get specific artist information 
 app.post('/api/artists',(req, res)=> {
     console.log(req.body);
     const id = req.body.ID;
@@ -57,15 +58,17 @@ app.post('/api/artists',(req, res)=> {
         if (err) throw err;
         if (artists){
             res.send(artists.rows);
+            console.log("empty is returned");
         }
         else {
             const badrequest = {"error": "bad request, there is no such list!"};
             res.send(badrequest);
+            console.log("error to return");
         }; 
     });
 });
 
-//get following details for a given track id
+//3.get following details for a given track id
 app.post('/tracks',(req, res)=> {
     const id = req.body.ID; 
     condition ="SELECT album_id, album_title, artist_id, artist_name, tags, track_date_created, track_date_recorded, track_duration, track_genres, track_number, track_title  FROM raw_tracks WHERE track_id= " + id + " " ;
@@ -182,7 +185,8 @@ app.post('/schedule',(req, res)=> {
         res.send(badrequest);
     }
     else {
-        res.send(lists.rows[0]);
+        res.send(lists.rows);
+        console.log(lists.rows);
         }
   });
 });
