@@ -33,7 +33,6 @@ function allgenres(){
   });
 }
 
-//要检查这个在error的时候不会被运行！！！！！！！！！！！！！！！！！！！！！！
 function update_table(ls){
   let tbo=document.getElementById("results").children[0];
   tbo.parentNode.removeChild(tbo);
@@ -72,6 +71,10 @@ function artistIDfind(){
   if (id ==""){
     window.alert("no input")
   }
+  if (isNaN(id)){
+    window.alert("bad input for id, recheck");
+    return;
+  }
   else{
     let item = {"ID": id };
     let receive = postData('POST', 'http://localhost:3000/api/artists', item);
@@ -92,6 +95,10 @@ function trackIDfind(){
   const id =document.getElementById("given_track_id").value;
   if (id ==""){
     window.alert("no input")
+  }
+  if (isNaN(id)){
+    window.alert("bad input for id, recheck");
+    return;
   }
   else{
     let item = {"ID": id };
@@ -159,12 +166,24 @@ function artistPatternfind(){
 function newlist(){
   const name =document.getElementById("given_lsname_new").value;
   const tracks =document.getElementById("given_ls_track_new").value;
-    //这里需要一个input check，防止他输入的不是1,2,3这种格式/
-  if (name =="" || tracks=="" ){
+      if (name =="" ){
       window.alert("no input")
   }
   else{
-    let trackls = "["+tracks+"]";
+    let trackls;
+    if (tracks=="" ){
+      trackls = "[]";
+    }
+    if (name.match(/<\/?[\w\s]*>|<.+[\W]>/)){
+      alert("invalid input for name, you are suspicious")
+    }
+    else if (!tracks.match(/^[0-9][0-9,]*[0-9]$/)){
+      alert("invalid array of tracks");
+      return;
+    }
+    else{
+      trackls = "["+tracks+"]"
+    };
     let item = {"name": name,"tracks": trackls};
     let receive = postData('POST', 'http://localhost:3000/newlist', item);
     receive.then(res =>{
@@ -192,11 +211,14 @@ function newlist(){
 function savetrackls(){
   const name =document.getElementById("given_lsname_update").value;
   const tracks =document.getElementById("given_ls_track").value;
-  //这里需要一个input check，防止他输入的不是1,2,3这种格式/
   if (name =="" ){
-    window.alert("no input")
+    window.alert("no input");
   }
   else{
+    if (!tracks.match(/^[0-9][0-9,]*[0-9]$/)){
+      alert("invalid array of tracks");
+      return;
+    }
     var trackls = "["+tracks+"]";
     let item = {"name": name,"tracks": trackls};
     let receive = postData('POST', 'http://localhost:3000/updatelist', item);
@@ -282,7 +304,7 @@ function deltrackls(){
 
 //10
 function lists(){
-  fetch('http://localhost:3000/api/deletelist')
+  fetch('http://localhost:3000/lists')
     .then(res => res.json())
     .then(data => {
       console.log(data);
@@ -305,7 +327,22 @@ function track_search(){
     let receive = postData('POST', 'http://localhost:3000/searchmusic', item);
     receive.then(res =>{
       console.log(res);
-      update_front_table(data);
+      if (res.length==0){ 
+        alert("no such name");
+        return;
+      }
+      if (Object.keys(res).includes("success")){
+        alert ("You successively created a list");
+        return;
+      }
+      if (Object.keys(res).includes("error")){
+        alert("you cannot use this name, not used");
+        return;
+      }
+      else{
+        update_front_table(res);
+      }
+ 
     })
   }
 }
@@ -318,11 +355,26 @@ function newlist_name(){
     window.alert("no input")
   }
   else{
+    if (name2.match(/<\/?[\w\s]*>|<.+[\W]>/)){
+      alert("invalid input for name, you are suspicious")
+    }
+
     let item = {"name": name2,"tracks": "[]"};
     let receive = postData('POST', 'http://localhost:3000/newlist', item);
     receive.then(res =>{
       console.log(res);
-      update_front_table(data);
+      if (res.length==0){ 
+        alert("no such name");
+        return;
+      }
+      if (Object.keys(res).includes("success")){
+        alert ("You successively created a list");
+        return;
+      }
+      if (Object.keys(res).includes("error")){
+        alert("you cannot use this name,  used");
+        return;
+      }
     })
   }
 }
@@ -337,21 +389,36 @@ function getfavlst(){
     let item = {"name": name};
     let receive = postData('POST', 'http://localhost:3000/favlist', item);
     receive.then(res =>{
-      console.log(res);
-      update_front_table(data);
+      console.log(res);                                                               ``
+      if (res.length==0){ 
+        alert("no such name or might be empty");
+        return;
+      }
+      if (Object.keys(res).includes("success")){
+        alert ("You successively created a list");
+        return;
+      }
+      if (Object.keys(res).includes("error")){
+        alert("you cannot use this name,  used");
+        return;
+      }
+      else{
+        update_front_table(res);
+      }
     })
   }
 }
 
-//for backend
+// table for backend
 function update_front_table(ls){
+  
   let tbo=document.getElementById("front_table").children[0];
-  let header=document.getElementById("front_table").children[0].children[0];
-  header.parentNode.removeChild(header);
+  tbo.parentNode.removeChild(tbo);
+  tbo = document.createElement("tbody");
+  document.getElementById("front_table").appendChild(tbo);
   header = document.createElement("tr");
   tbo.appendChild(header);
 
-  //for headers
   let lskeys=Object.keys(ls[0]);
   for (const i in lskeys){
     let key= document.createElement("th");
@@ -362,14 +429,43 @@ function update_front_table(ls){
 
   //for contents
   for (j in ls){
-    let row = document.createElement("tr");
-    let lsvalues=Object.values(ls[j]);
-    for (const i in lsvalues){
-      let value= document.createElement("td");
-      let content=document.createTextNode(lsvalues[i]);
-      value.appendChild(content);      
-      row.appendChild(value);
+    if (ls[j]!= null){
+      let row = document.createElement("tr");
+      let lsvalues=Object.values(ls[j]);
+      for (const i in lsvalues){
+        let value= document.createElement("td");
+        let content=document.createTextNode(lsvalues[i]);
+        value.appendChild(content);      
+        row.appendChild(value);
+      }
+      tbo.appendChild(row);  
     }
-    tbo.appendChild(row);
   }
+}
+
+function orderby(option){
+  let table = document.getElementById("front_table");
+  let swaping = 1;
+  while (swaping){
+    swaping = 0;
+    let lorow = table.rows;
+    let i =1;
+    let needswap;
+    while (i < lorow.length-1){
+      swaping = 0;
+      needswap=0;
+      let x= lorow[i].getElementsByTagName("td")[option];
+      let y= lorow[i+1].getElementsByTagName("td")[option];
+      if (x.innerHTML> y.innerHTML) {
+        needswap= 1;
+        break;
+      }
+      i+=1;
+    }
+    if (needswap){
+        lorow[i].parentNode.insertBefore(lorow[i + 1], lorow[i]);
+        swaping = 1;
+    }
+  }
+  console.log("sort completed");
 }
