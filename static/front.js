@@ -1,35 +1,40 @@
+let addr="http://localhost:3000/";
+
 //for post fetch
 async function postData(method = '', url = '', data) {
   // Default options are marked with *
 
   const response = await fetch(url, {
-      method: method, // *GET, POST, PUT, DELETE, etc.
-      mode: 'cors', // no-cors, *cors, same-origin
-      cache: 'no-cache', 
-      credentials: 'same-origin', // include, *same-origin, omit
-      ...(!data ? {} : {
-          headers: {
-              'Content-Type': 'application/json'
-          },
-          body: JSON.stringify(data) 
-      }),
+    method: method, // *GET, POST, PUT, DELETE, etc.
+    mode: 'cors', // no-cors, *cors, same-origin
+    cache: 'no-cache', 
+    credentials: 'same-origin', // include, *same-origin, omit
+    ...(!data ? {} : {
+      headers: {
+        'Content-Type': 'application/json'
+         // 'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      body: JSON.stringify(data) 
+    }),
 
       redirect: 'follow', // manual, *follow, error
       referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
   });
   return response.json(); // parses JSON response into native JavaScript objects
 }
+//referencing: https://developer.mozilla.org/en-US/docs/web/api/fetch_api/using_fetch
 
 //1
 function allgenres(){
-    fetch('http://localhost:3000/api/genres')
-    .then(res => res.json())
-    .then(data => {
-      console.log(data)
-      update_table(data);
-    })
-    .catch(rejected => {
-    console.log(rejected);
+  localaddr=addr+"genres";
+  fetch(localaddr)
+  .then(res => res.json())
+  .then(data => {
+    console.log(data)
+    update_table(data);
+  })
+  .catch(rejected => {
+  console.log(rejected);
   });
 }
 
@@ -77,7 +82,8 @@ function artistIDfind(){
   }
   else{
     let item = {"ID": id };
-    let receive = postData('POST', 'http://localhost:3000/api/artists', item);
+    const localaddr=addr+"artists";
+    let receive = postData('POST', localaddr, item);
     receive.then(res =>{
       console.log(res);
       if (res.length==0){ 
@@ -102,7 +108,8 @@ function trackIDfind(){
   }
   else{
     let item = {"ID": id };
-    let receive = postData('POST', 'http://localhost:3000/tracks', item);
+    const localaddr=addr+"tracks";
+    let receive = postData('POST',localaddr, item);
     receive.then(res =>{
       console.log(res);
       if (res.length==0){ 
@@ -128,7 +135,8 @@ function trackPatternfind(){
   }
   else{
     let item = {"title": title,"n":n };
-    let receive = postData('POST', 'http://localhost:3000/tracks_pattern/', item);
+    const localaddr=addr+"tracks_pattern";
+    let receive = postData('POST', localaddr, item);
     receive.then(res =>{
       console.log(res);
       if (res.length==0){ 
@@ -149,7 +157,8 @@ function artistPatternfind(){
   }
   else{
     let item = {"pattern": pattern};
-    let receive = postData('POST', 'http://localhost:3000/artist_pattern/', item);
+    const localaddr=addr+"tracks_pattern";
+    let receive = postData('POST', localaddr, item);
     receive.then(res =>{
       console.log(res);
       if (res.length==0){ 
@@ -162,7 +171,7 @@ function artistPatternfind(){
   }
 }
 
-//6 不知道需不需要list of tracks
+//6 
 function newlist(){
   const name =document.getElementById("given_lsname_new").value;
   const tracks =document.getElementById("given_ls_track_new").value;
@@ -171,13 +180,13 @@ function newlist(){
   }
   else{
     let trackls;
-    if (tracks=="" ){
-      trackls = "[]";
-    }
     if (name.match(/<\/?[\w\s]*>|<.+[\W]>/)){
       alert("invalid input for name, you are suspicious")
     }
-    else if (!tracks.match(/^[0-9][0-9,]*[0-9]$/)){
+    if (tracks=="" ){
+      trackls = "[]";
+    }
+    else if ((!tracks.match(/^[0-9][0-9,]*[0-9]$/)) && (tracks !="")){
       alert("invalid array of tracks");
       return;
     }
@@ -185,7 +194,8 @@ function newlist(){
       trackls = "["+tracks+"]"
     };
     let item = {"name": name,"tracks": trackls};
-    let receive = postData('POST', 'http://localhost:3000/newlist', item);
+    const localaddr=addr+"newlist";
+    let receive = postData('POST', localaddr, item);
     receive.then(res =>{
       console.log(res);
       if (res.length==0){ 
@@ -206,6 +216,7 @@ function newlist(){
     })
   }
 }
+//referencing:https://javascript.plainenglish.io/the-7-most-commonly-used-regular-expressions-in-javascript-bb4e98288ca6 
 
 //7
 function savetrackls(){
@@ -221,7 +232,8 @@ function savetrackls(){
     }
     var trackls = "["+tracks+"]";
     let item = {"name": name,"tracks": trackls};
-    let receive = postData('POST', 'http://localhost:3000/updatelist', item);
+    const localaddr=addr+"updatelist";
+    let receive = postData('POST', localaddr, item);
     receive.then(res =>{
       console.log(res);
       if (res.length==0){ 
@@ -251,14 +263,15 @@ function gettrackls(){
   }
   else{
     let item = {"name": name};
-    let receive = postData('POST', 'http://localhost:3000/schedule', item);
+    const localaddr=addr+"schedule";
+    let receive = postData('POST', localaddr, item);
     receive.then(res =>{ 
       console.log(res);
       if (res.length==0){ 
         alert("no such name");
       }
       if (Object.keys(res).includes("success")){
-        alert ("You successively deleted  a list");
+        alert ("You successively deleted a list");
         return;
       }
       if (Object.keys(res).includes("error")){
@@ -280,7 +293,8 @@ function deltrackls(){
   }
   else{
     let item = {"name": name};
-    let receive = postData('POST', 'http://localhost:3000/deletelist', item);
+    const localaddr=addr+"deletelist";
+    let receive = postData('POST', localaddr, item);
     receive.then(res =>{
       console.log(res);      
       if (res.length==0){ 
@@ -304,7 +318,8 @@ function deltrackls(){
 
 //10
 function lists(){
-  fetch('http://localhost:3000/lists')
+  const localaddr=addr+"lists";
+  fetch(localaddr)
     .then(res => res.json())
     .then(data => {
       console.log(data);
@@ -324,7 +339,8 @@ function track_search(){
   }
   else{
     let item = {"name": name, "option":option};
-    let receive = postData('POST', 'http://localhost:3000/searchmusic', item);
+    const localaddr=addr+"searchmusic";
+    let receive = postData('POST',localaddr, item);
     receive.then(res =>{
       console.log(res);
       if (res.length==0){ 
@@ -360,7 +376,8 @@ function newlist_name(){
     }
 
     let item = {"name": name2,"tracks": "[]"};
-    let receive = postData('POST', 'http://localhost:3000/newlist', item);
+    const localaddr=addr+"newlist";
+    let receive = postData('POST',localaddr, item);
     receive.then(res =>{
       console.log(res);
       if (res.length==0){ 
@@ -387,7 +404,8 @@ function getfavlst(){
   }
   else{
     let item = {"name": name};
-    let receive = postData('POST', 'http://localhost:3000/favlist', item);
+    const localaddr=addr+"favlist";
+    let receive = postData('POST', localaddr, item);
     receive.then(res =>{
       console.log(res);                                                               ``
       if (res.length==0){ 
@@ -469,3 +487,4 @@ function orderby(option){
   }
   console.log("sort completed");
 }
+//referencing: https://www.w3schools.com/howto/howto_js_sort_table.asp

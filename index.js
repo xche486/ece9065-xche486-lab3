@@ -30,6 +30,7 @@ const con = new Pool({
     password: 'hp0Li1VwztVOl6AW',
     port: 5432,
   })
+  //referencing: https://node-postgres.com/features/connecting
 
 //check db connection 
 con.connect(function(err) {
@@ -39,7 +40,7 @@ con.connect(function(err) {
 
 
 //1.get all available genre names, IDs and parent IDs
-router.get('/genres', async(req, res)=> {
+app.get('/genres', async(req, res)=> {
     condition ="SELECT title as names, genre_id as IDs, parent as Parent_IDs FROM genres" 
     await con.query(condition , function (err , genres, fields) {
       if (err) throw err;
@@ -50,7 +51,7 @@ router.get('/genres', async(req, res)=> {
 
 
 //2.get specific artist information 
-app.post('/api/artists',async(req, res)=> {
+app.post('/artists',async(req, res)=> {
     console.log(req.body);
     const id = req.body.ID;
     condition ="SELECT artist_id, artist_comments, artist_favorites, artist_handle, artist_name,artist_url, tags FROM raw_artists WHERE artist_id = '"+ id + "' " ;
