@@ -1,4 +1,4 @@
-let addr="http://localhost:3000/";
+let addr="http://34.228.68.45:3000/";
 
 //for post fetch
 async function postData(method = '', url = '', data) {
@@ -82,7 +82,7 @@ function artistIDfind(){
   }
   else{
     let item = {"ID": id };
-    const localaddr=addr+"artists";
+    const localaddr= addr+"artists";
     let receive = postData('POST', localaddr, item);
     receive.then(res =>{
       console.log(res);
@@ -181,7 +181,8 @@ function newlist(){
   else{
     let trackls;
     if (name.match(/<\/?[\w\s]*>|<.+[\W]>/)){
-      alert("invalid input for name, you are suspicious")
+      alert("invalid input for name, you are suspicious");
+      return;
     }
     if (tracks=="" ){
       trackls = "[]";
@@ -373,6 +374,7 @@ function newlist_name(){
   else{
     if (name2.match(/<\/?[\w\s]*>|<.+[\W]>/)){
       alert("invalid input for name, you are suspicious")
+      return;
     }
 
     let item = {"name": name2,"tracks": "[]"};
